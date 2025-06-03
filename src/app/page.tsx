@@ -37,7 +37,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Image with gradients - hide on very small screens */}
+        {/* Desktop and tablet image with gradients */}
         <div className="absolute inset-0 -right-1/6 overflow-hidden hidden sm:block">
           <div className="absolute right-0 w-[100%] h-full">
             {/* Left gradient */}
@@ -65,15 +65,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile image - only show on very small screens */}
-        <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 w-48 h-48 opacity-20">
-          <Image
-            src={`${process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : ''}/hero-model.png`}
-            alt="Scent device illustration"
-            fill
-            className="object-contain"
-            priority
-          />
+        {/* Mobile image */}
+        <div className="absolute inset-0 sm:hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-transparent to-[#0A0A0A] z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/70 to-transparent z-10" />
+          <div className="relative w-full h-full">
+            <Image
+              src={`${process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : ''}/hero-model.png`}
+              alt="Scent device illustration"
+              fill
+              className="object-cover object-center opacity-60"
+              priority
+              sizes="100vw"
+            />
+          </div>
         </div>
       </section>
 
