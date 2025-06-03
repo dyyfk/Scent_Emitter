@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
+const isGithubActions = process.env.GITHUB_ACTIONS || false;
+
+let assetPrefix = '';
+let basePath = '';
+
+if (isGithubActions) {
+  const repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, '');
+  assetPrefix = `/${repo}/`;
+  basePath = `/${repo}`;
+}
+
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
@@ -11,8 +22,8 @@ const nextConfig = {
     ],
   },
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/Scent_Emitter/' : '',
+  assetPrefix: assetPrefix,
+  basePath: basePath,
   trailingSlash: true,
 };
 
