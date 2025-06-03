@@ -1,6 +1,14 @@
+'use client'
 import Image from 'next/image'
+import { useState } from 'react'
 
 export default function Home() {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  };
+
   return (
     <main className="min-h-screen bg-[#0A0A0A] px-4 md:px-8 lg:px-16 py-8 md:py-12 space-y-16 md:space-y-24">
       {/* Hero Section */}
@@ -142,7 +150,59 @@ export default function Home() {
       {/* FAQ Section */}
       <section className="max-w-7xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-8 md:mb-12">Frequently Asked Questions</h2>
-        {/* FAQ items can be added here */}
+        <div className="flex flex-col gap-2">
+          {[
+            {
+              question: "How long do the scent cartridges last?",
+              answer: "Each cartridge typically lasts for 30-40 hours of active use. The app will notify you when it's time to replace a cartridge."
+            },
+            {
+              question: "Is it safe to use indoors?",
+              answer: "Yes, all our scents are made from natural, hypoallergenic ingredients that are safe for indoor use. The device includes built-in safety features for controlled dispersion."
+            },
+            {
+              question: "What content is compatible with the device?",
+              answer: "Our device works with specially encoded videos from our partner platforms. We're continuously expanding our library and working with content creators to bring more scent-enabled experiences."
+            },
+            {
+              question: "How does the synchronization work?",
+              answer: "The device connects to your computer or mobile device via Bluetooth. Our software reads special timestamps in compatible content to release the right scents at the perfect moment."
+            }
+          ].map((faq, i) => (
+            <button
+              key={i}
+              onClick={() => toggleFaq(i)}
+              className="w-full text-left"
+            >
+              <div className="p-4 md:p-6 bg-[#0F1218] rounded-lg border border-gray-800 transition-all hover:border-gray-700">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-base md:text-lg font-medium text-gray-200">{faq.question}</h3>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    className={`text-gray-400 transition-transform ${openFaqIndex === i ? 'rotate-180' : ''}`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaqIndex === i ? 'max-h-48 mt-4' : 'max-h-0'
+                    }`}
+                >
+                  <p className="text-sm md:text-base text-gray-400">{faq.answer}</p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
       </section>
     </main>
   )
