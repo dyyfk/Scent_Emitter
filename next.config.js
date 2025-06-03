@@ -5,10 +5,9 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
-  ...(process.env.NODE_ENV === 'production' ? {
-    basePath: '/Scent_Emitter',
-    assetPrefix: '/Scent_Emitter/',
-  } : {}),
+  basePath: process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/Scent_Emitter/' : '',
+  trailingSlash: true,
 };
 
 module.exports = nextConfig; 
