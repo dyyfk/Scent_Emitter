@@ -5,8 +5,8 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/Scent_Emitter/' : '',
+  basePath: '/Scent_Emitter',
+  assetPrefix: '/Scent_Emitter/',
   trailingSlash: true,
 };
 
