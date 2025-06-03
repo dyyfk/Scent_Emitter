@@ -55,7 +55,7 @@ export default function Home() {
               style={{ background: 'linear-gradient(to bottom, transparent 85%, rgba(17, 24, 39, 0.2) 92%, #111827 98%)' }} />
             <div className="relative w-full h-full">
               <Image
-                src="/hero-model.png"
+                src={`${process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : ''}/hero-model.png`}
                 alt="Model using scent device"
                 fill
                 priority
