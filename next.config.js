@@ -6,7 +6,6 @@ const nextConfig = {
     domains: ['images.unsplash.com'],
     unoptimized: true,
   },
-  output: 'export',
   basePath: isProduction ? '/Scent_Emitter' : '',
   assetPrefix: isProduction ? '/Scent_Emitter/' : '',
   trailingSlash: true,

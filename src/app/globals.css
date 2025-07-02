@@ -1,12 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   --foreground-rgb: 255, 255, 255;
+  --accent-blue: #3be7ff;
+  --accent-violet: #a259ff;
+  --accent-magenta: #ff4ecd;
+  --accent-cyan: #00ffd0;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: #111827;
+  font-family: 'Sora', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Sora', Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.parallax-blob {
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadein-slideup {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadein-slideup {
+  animation: fadein-slideup 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.section-reveal-hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+}
+
+.section-reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-blob {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.18;
+  transition: opacity 0.5s;
+}
+
+#bg-blob1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #3be7ff 0%, transparent 70%);
+  top: -200px;
+  left: -200px;
+  animation: blobMove1 60s ease-in-out infinite alternate;
+}
+
+#bg-blob2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #a259ff 0%, transparent 70%);
+  bottom: -150px;
+  right: -150px;
+  animation: blobMove2 50s ease-in-out infinite alternate;
+}
+
+#bg-blob3 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #ff4ecd 0%, transparent 70%);
+  top: 40%;
+  left: 60%;
+  animation: blobMove3 40s ease-in-out infinite alternate;
+}
+
+@keyframes blobMove1 {
+  0% {
+    top: -200px;
+    left: -200px;
+  }
+
+  100% {
+    top: 100px;
+    left: 100px;
+  }
+}
+
+@keyframes blobMove2 {
+  0% {
+    bottom: -150px;
+    right: -150px;
+  }
+
+  100% {
+    bottom: 100px;
+    right: 100px;
+  }
+}
+
+@keyframes blobMove3 {
+  0% {
+    top: 40%;
+    left: 60%;
+  }
+
+  100% {
+    top: 60%;
+    left: 40%;
+  }
+}
+
+section {
+  background: transparent;
+}
+
+/* Accent color utility classes */
+.btn-accent {
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-violet), var(--accent-magenta));
+  color: #fff;
+}
+
+.text-accent {
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-violet), var(--accent-magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
