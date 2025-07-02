@@ -157,7 +157,7 @@ export default function Home() {
                 <div className="relative w-full h-[500px] lg:h-[600px] group">
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl blur-3xl group-hover:blur-2xl transition-all duration-500"></div>
                   <Image
-                    src={`${process.env.NODE_ENV === 'production' ? '/Scent_Emitter' : ''}/hero-model.png`}
+                    src="/hero-model.png"
                     alt="Scent device illustration"
                     fill
                     className="object-contain group-hover:scale-105 transition-all duration-500"
