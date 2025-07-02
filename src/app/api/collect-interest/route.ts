@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     // Verification link
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const verifyUrl = `${baseUrl}/api/verify/${token}`;
+    const verifyUrl = `${baseUrl}/verify/${token}`;
 
     // Set up Nodemailer transporter
     const transporter = nodemailer.createTransport({
