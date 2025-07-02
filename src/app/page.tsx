@@ -24,10 +24,30 @@ function SectionReveal({ children }: { children: React.ReactNode }) {
   return <div ref={ref} className={isVisible ? 'section-reveal-in' : 'section-reveal-hidden'}>{children}</div>;
 }
 
+function Modal({ open, onClose, children }: { open: boolean, onClose: () => void, children: React.ReactNode }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fadein">
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl shadow-2xl p-8 w-full max-w-md relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold focus:outline-none"
+          aria-label="Close modal"
+        >
+          ×
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [waitlistName, setWaitlistName] = useState('');
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [waitlistError, setWaitlistError] = useState('');
@@ -55,11 +75,18 @@ export default function Home() {
   function validateEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
+  function validateName(name: string) {
+    return name.trim().length > 0;
+  }
 
   async function handleWaitlistSubmit(e: React.FormEvent) {
     e.preventDefault();
     setWaitlistError('');
     setWaitlistSuccess(false);
+    if (!validateName(waitlistName)) {
+      setWaitlistError('Please enter your name.');
+      return;
+    }
     if (!validateEmail(waitlistEmail)) {
       setWaitlistError('Please enter a valid email address.');
       return;
@@ -69,11 +96,12 @@ export default function Home() {
       const res = await fetch('/api/collect-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: waitlistEmail }),
+        body: JSON.stringify({ name: waitlistName, email: waitlistEmail }),
       });
       const data = await res.json();
       if (data.success) {
         setWaitlistSuccess(true);
+        setWaitlistName('');
         setWaitlistEmail('');
       } else {
         setWaitlistError(data.error || 'Something went wrong.');
@@ -101,11 +129,59 @@ export default function Home() {
               Scent Emitter
             </div>
           </Link>
-          <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40">
+          <button
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
+            onClick={() => setModalOpen(true)}
+          >
             Join Waitlist
           </button>
         </div>
       </header>
+
+      {/* Waitlist Modal */}
+      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setWaitlistError(''); setWaitlistSuccess(false); }}>
+        <h2 className="text-2xl font-bold mb-4 text-center">Join the Waitlist</h2>
+        <form onSubmit={handleWaitlistSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 bg-gray-50/10 border border-gray-200/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm hover:bg-gray-50/20 transition-all duration-300"
+              placeholder="Your name"
+              value={waitlistName}
+              onChange={e => setWaitlistName(e.target.value)}
+              disabled={waitlistLoading}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              className="w-full px-4 py-3 bg-gray-50/10 border border-gray-200/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm hover:bg-gray-50/20 transition-all duration-300"
+              placeholder="Your email address"
+              value={waitlistEmail}
+              onChange={e => setWaitlistEmail(e.target.value)}
+              disabled={waitlistLoading}
+              required
+            />
+          </div>
+          {waitlistError && <div className="text-red-400 animate-fadein-slideup">{waitlistError}</div>}
+          {waitlistSuccess && <div className="text-green-400 animate-fadein-slideup">Thank you, {waitlistName || 'friend'}! You'll be the first to know.</div>}
+          <button
+            type="submit"
+            className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
+            disabled={waitlistLoading || !validateEmail(waitlistEmail) || !validateName(waitlistName)}
+            style={{ opacity: waitlistLoading || !validateEmail(waitlistEmail) || !validateName(waitlistName) ? 0.6 : 1 }}
+          >
+            {waitlistLoading ? 'Sending...' : 'Join Waitlist'}
+          </button>
+        </form>
+      </Modal>
 
       {/* Hero Section */}
       <SectionReveal>
@@ -127,27 +203,6 @@ export default function Home() {
                     Scent Emitter brings you closer—releasing evocative scents in perfect harmony with your favorite moments, deepening every connection, memory, and emotion.
                   </p>
                 </div>
-                <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md animate-fadein-slideup" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="flex-1 px-6 py-4 bg-gray-50/10 border border-gray-200/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm hover:bg-gray-50/20 transition-all duration-300"
-                    value={waitlistEmail}
-                    onChange={e => setWaitlistEmail(e.target.value)}
-                    disabled={waitlistLoading}
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 whitespace-nowrap shadow-lg shadow-blue-500/25 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40"
-                    disabled={waitlistLoading || !validateEmail(waitlistEmail)}
-                    style={{ opacity: waitlistLoading || !validateEmail(waitlistEmail) ? 0.6 : 1 }}
-                  >
-                    {waitlistLoading ? 'Sending...' : 'Be First to Feel the Future'}
-                  </button>
-                </form>
-                {waitlistError && <div className="text-red-400 mt-2 animate-fadein-slideup">{waitlistError}</div>}
-                {waitlistSuccess && <div className="text-green-400 mt-2 animate-fadein-slideup">Thank you! You'll be the first to know.</div>}
               </div>
               {/* Image */}
               <div
